@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, ModalController } from 'ionic-angular';
 
 import { FirebaseProvider } from '../../providers/firebase';
+import { Http, Headers, RequestOptions } from '@angular/http';
 
 import { HomePage } from '../home/home';
 import { ProfilePage } from '../profile/profile';
@@ -9,6 +10,7 @@ import { ActivityPage } from '../activity/activity';
 import { CreateAccountPage } from '../createAccount/createAccount';
 import { LoginPage } from '../login/login';
 import { logInButton } from '../home/home';
+import { Backend } from '../../app/ajax';
 
 /**
  * Generated class for the AboutPage page.
@@ -23,9 +25,12 @@ import { logInButton } from '../home/home';
 })
 export class AboutPage {
 
+  private Ajax;
+
   private logInButton = "Create Account/Log In";
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public modalCtrl: ModalController) {
+    this.Ajax = new Backend.Ajax(http);
   }
 
   ionViewDidLoad() {

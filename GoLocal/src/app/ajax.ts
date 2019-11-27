@@ -5,23 +5,15 @@
  *      TypeScript file for backend 
  */
 
-import $ from 'jquery';
+// import $ from 'jquery';
 
 import { HomePage } from '../pages/home/home';
-import { TabsPage } from '../pages/tabs/tabs';
-import { LoginPage } from '../pages/login/login';
-import { CreateUser } from '../pages/createUser/createUser';
-import { CreateSecurityQuestions } from '../pages/securityQuestions/createSecurityQuestions';
-import { SubmitSecurityQuestions } from '../pages/securityQuestions/submitSecurityQuestions';
 
-import { FeedbackData } from '../pages/feedback/feedbackData';
-import { FeedbackPage } from '../pages/feedback/feedback';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import { httpFactory } from '@angular/http/src/http_module';
 import { NavController } from 'ionic-angular';
 
 import 'rxjs/Rx';
-import { TutorialPage } from '../pages/tutorial/tutorial';
 import { P } from '@angular/core/src/render3';
 import { _ParseAST } from '@angular/compiler';
 
@@ -81,7 +73,6 @@ export module Backend {
             this.headers.append('Access-Control-Allow-Origin' , '*');
             this.headers.append('Content-Type','application/x-www-form-urlencoded');
             this.headers.append('Content-Type','application/json');
-
         }
 
         // Create participant codes
