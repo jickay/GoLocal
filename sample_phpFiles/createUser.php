@@ -9,6 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
 
     $username = filter_var($obj->username, FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_LOW);    //Get the submitted username
     $password = filter_var($obj->password, FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_LOW);    //Get the submitted passcode
+    $usertype = filter_var($obj->usertype, FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_LOW);  
 
     $opt = array(
         PDO::ATTR_ERRMODE  => PDO::ERRMODE_EXCEPTION,
@@ -16,28 +17,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
         PDO::ATTR_EMULATE_PREPARES => false,     //I know that emulation is important but not too sure how this relates 
     );                                                                            
 
-    $sql = 'SELECT * FROM user WHERE username = :username';
+    $sql = "INSERT INTO user (username, password, usertype)
+            VALUES (:username, :password, :usertype);";
     $sql_get_pass = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-    $sql_get_pass->execute(array(':username' => $username));
+    $sql_get_pass->execute(array(':username' => $username,':password' => $password,':usertype' => $usertype));
     $user = $sql_get_pass->fetch(PDO::FETCH_ASSOC);
-
-    $retrived = $sql_get_pass->rowCount();   // Get the number of rows returned
-
-    //make sure only one was returned, more than one means are duplicate user names in the database which is not good :(
-    if ($retrived != 1) {
-        http_response_code(401);
-        $sql_get_pass = null;
-        $pdo = null;
-        exit();
-    }
-
-    //Check submitted passcode against
-    if($password != $user['password']){
-        http_response_code(401);
-        $sql_get_pass = null;
-        $pdo = null;
-        exit();
-    }
 
     // return the id, and pin of the logged in user
     $send = array(

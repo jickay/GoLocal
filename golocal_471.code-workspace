@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "."
+		},
+		{
+			"path": "sample_phpFiles"
 		}
 	],
 	"settings": {}

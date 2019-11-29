@@ -23,14 +23,14 @@ declare let cordova: any;
 export module Backend {
 
     export class Ajax {
-        //public _ROOT = "http://localhost:8080/";
-        public _ROOT = "https://looseleaf.ngrok.io/app/";
+        // public _ROOT = "http://localhost/";
+        public _ROOT = "http://8e2b1222.ngrok.io/";
 
         public GEN_CODES = this._ROOT + "createParticipantCodes.php";
 
-        public AUTH_URL = this._ROOT + "userAuthLL.php";
+        public AUTH_URL = this._ROOT + "userAuth.php";
         //public AUTH_URL = this._ROOT + "LLTEST/createuserLL.php";
-        public CREATE_USER_URL = this._ROOT + "createuserLL.php";
+        public CREATE_USER_URL = this._ROOT + "createUser.php";
         public GET_USER_ID = this._ROOT + "getUserID.php";
         public GET_USER_PW = this._ROOT + "getUserPassword.php";
         public CHANGE_USER_PW = this._ROOT + "changeUserPassword.php";
@@ -65,14 +65,19 @@ export module Backend {
 
         public GET_USER_FEEDBACK_DATA_URL = this._ROOT + "feedbackLL.php";
     
-
         private headers: Headers = new Headers({});
+        private options: RequestOptions;
 
         // Constructor
         constructor(http: Http) {
             this.headers.append('Access-Control-Allow-Origin' , '*');
-            this.headers.append('Content-Type','application/x-www-form-urlencoded');
-            this.headers.append('Content-Type','application/json');
+            this.headers.append('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, PUT');
+            this.headers.append('Accept','application/json');
+            this.headers.append('content-type','application/json');
+
+            this.options = new RequestOptions({
+                headers: this.headers
+            })
         }
 
         // Create participant codes
@@ -125,9 +130,9 @@ export module Backend {
         }
 
         // Creates new user 
-        public createUser(http,options,localStorage,navCtrl,newData,button) {
+        public createUser(http,localStorage,navCtrl,newData) {
             console.log("Creating user in ajax")
-            http.post( this.CREATE_USER_URL, newData, options)
+            http.post( this.CREATE_USER_URL, newData, this.options)
             // Callback public if post succeeds
             .subscribe( data => {
                 var json;
@@ -136,53 +141,58 @@ export module Backend {
                     json = data.json();
                     console.log("New user:");
                     console.log(json);
-
-                    // Retreive all app content on successful creation of new user
-                    // this.getAllQuestions(http,options,localStorage);
-                    // this.getAllGoalParts(http,localStorage,options);
-
-                    if (json.ID) {
-                        // Store ID info locally
-                        console.log("This is the users data:");
-                        console.log(json);
-                        // Store ID info locally
-                        localStorage.set('user_ID', json.ID);
-                        localStorage.set('username', json.username);
-                        localStorage.set('pin', { loggedIn:true, number:json.pin });
-                        // // Set notification values
-                        // localStorage.set('notification', { hour:21, minute:0 });
-                        // Set default data values
-                        localStorage.set('answers',[]);
-                        localStorage.set('userInventories',[]);
-                        localStorage.set('feedbackData',{});
-                        // Set default notifications (DISABLE FOR TESTING!!!)
-                        this.setDailyNotification(21,0);
-
-                        // navCtrl.push(CreateSecurityQuestions, { user_ID:json.ID });
-                        navCtrl.setRoot(TabsPage, { isNewUser: false });
-                    }
                 } catch (error) {
-                    console.log("Error parsing user json")
-                    console.log(data['_body']);
-                    console.log("Could not read data after creating user.")
-                }                
-            }, error => {
-                console.log("Error creating user")
-                console.log(error);
-                if (error.status == 421) {
-                    console.log("Could not create new user, no ID");
-                } else if (error.status == 422) {
-                    console.log("Could not create new user:\n\n" + error['_body']);
-                    console.log("Username is taken!");
-                } else {
-                    console.log("Was a problem creating new user")
+
                 }
-                button.disabled = false;
+
+            //         // Retreive all app content on successful creation of new user
+            //         // this.getAllQuestions(http,options,localStorage);
+            //         // this.getAllGoalParts(http,localStorage,options);
+
+            //         if (json.ID) {
+            //             // Store ID info locally
+            //             console.log("This is the users data:");
+            //             console.log(json);
+            //             // Store ID info locally
+            //             localStorage.set('user_ID', json.ID);
+            //             localStorage.set('username', json.username);
+            //             localStorage.set('pin', { loggedIn:true, number:json.pin });
+            //             // // Set notification values
+            //             // localStorage.set('notification', { hour:21, minute:0 });
+            //             // Set default data values
+            //             localStorage.set('answers',[]);
+            //             localStorage.set('userInventories',[]);
+            //             localStorage.set('feedbackData',{});
+            //             // Set default notifications (DISABLE FOR TESTING!!!)
+            //             this.setDailyNotification(21,0);
+
+            //             // navCtrl.push(CreateSecurityQuestions, { user_ID:json.ID });
+            //             navCtrl.setRoot(TabsPage, { isNewUser: false });
+            //         }
+            //     } catch (error) {
+            //         console.log("Error parsing user json")
+            //         console.log(data['_body']);
+            //         console.log("Could not read data after creating user.")
+            //     }                
+            // }, error => {
+            //     console.log("Error creating user")
+            //     console.log(error);
+            //     if (error.status == 421) {
+            //         console.log("Could not create new user, no ID");
+            //     } else if (error.status == 422) {
+            //         console.log("Could not create new user:\n\n" + error['_body']);
+            //         console.log("Username is taken!");
+            //     } else {
+            //         console.log("Was a problem creating new user")
+            //     }
+            //     button.disabled = false;
             });
         }
 
-        public userAuth(http,options,navCtrl,localStorage,page,button,newData) {
-            http.post( this.AUTH_URL, newData, options)
+        public userAuth(http,navCtrl,localStorage,newData) {
+            console.log("Authorizing user");
+            // console.log(this.AUTH_URL);
+            http.post( this.AUTH_URL, newData)
             // Callback public if post succeeds
             .subscribe( data => {
                 var json;
@@ -193,31 +203,31 @@ export module Backend {
                 } catch (error) {
                     console.log(data['_body']);
                     alert("Something went wrong. Couldn't login.")
-                    button.disabled = false;
+                    // button.disabled = false;
                 }
 
-                if (json.user_ID) {
-                    console.log("Set local user ID: " + json.user_ID);
-                    console.log("Set local pin to: " + json.pin);
-                    console.log("Set local username to: " + json.username);
-                    // Store ID info locally
-                    localStorage.set('user_ID', json.user_ID);
-                    localStorage.set('username', json.username);
-                    localStorage.set('pin', { loggedIn:true, number:json.pin });
+                // if (json.user_ID) {
+                //     console.log("Set local user ID: " + json.user_ID);
+                //     console.log("Set local pin to: " + json.pin);
+                //     console.log("Set local username to: " + json.username);
+                //     // Store ID info locally
+                //     localStorage.set('user_ID', json.user_ID);
+                //     localStorage.set('username', json.username);
+                //     localStorage.set('pin', { loggedIn:true, number:json.pin });
                     
-                    // Retreive all app content on successful login
-                    this.getUserInventories(http, options, localStorage, json.user_ID);
-                    //this.getUserAnswers(http, options, json.user_ID);
+                //     // Retreive all app content on successful login
+                //     this.getUserInventories(http, localStorage, json.user_ID);
+                //     //this.getUserAnswers(http, options, json.user_ID);
 
-                    // Change root page to tabs page
-                    navCtrl.setRoot(TabsPage);
+                //     // Change root page to tabs page
+                //     navCtrl.setRoot(TabsPage);
                 
-                }
-                console.log("RECEIVED ALL DATA!!!");
+                // }
+                // console.log("RECEIVED ALL DATA!!!");
             }, error => {
                 console.log(error);
-                alert("Username/password is not working. Try again.");
-                button.disabled = false;
+                // alert("Username/password is not working. Try again.");
+                // button.disabled = false;
                 // window.plugins.toast.showLongBottom('Error getting users!')
             });
         }

@@ -29,7 +29,8 @@ export class AboutPage {
 
   private logInButton = "Create Account/Log In";
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public modalCtrl: ModalController) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, 
+              public http: Http, public modalCtrl: ModalController) {
     this.Ajax = new Backend.Ajax(http);
   }
 

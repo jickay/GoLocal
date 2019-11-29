@@ -57,7 +57,8 @@ const firebaseConfig = {
     AngularFireModule.initializeApp(firebaseConfig),
     IonicModule.forRoot(MyApp),
     IonicStorageModule.forRoot(),
-    FileUploadModule
+    FileUploadModule,
+    HttpModule,
   ],
   bootstrap: [IonicApp],
   entryComponents: [
