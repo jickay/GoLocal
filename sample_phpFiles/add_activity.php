@@ -21,11 +21,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
     );                                                                            
 
     $sql = "INSERT INTO activity_package (host_user, location, category, price, title, description)
-            VALUES (:username, :location , :category, :price, :title, :description);";
+            VALUES (:username, :location , :category, :price, :title, :description)";
             
-    $sql_get_pass = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-    $sql_get_pass->execute(array(':username' => $username));
-    $user = $sql_get_pass->fetch(PDO::FETCH_ASSOC);
+    $stmt = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+    $stmt->execute(array(':username' => $username,':location' => $location,':category' => $category,':price' => $price,':title' => $title,':description' => $description));
+    $row = $sql_get_pass->fetch(PDO::FETCH_ASSOC);
+    $id = $row['activity_id'];
+
+
+
+    $sql = "INSERT INTO picture (username,activity_id)
+            VALUES (:username, :activity_id)";
+            
+    $stmt = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+    $stmt->execute(array(':username' => $username,':activity_id' => $id));
 
     // return the id, and pin of the logged in user
     $send = array(
