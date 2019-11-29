@@ -35,35 +35,7 @@ export module Backend {
         public GET_USER_PW = this._ROOT + "getUserPassword.php";
         public CHANGE_USER_PW = this._ROOT + "changeUserPassword.php";
 
-        public GET_SECURITY_QUESTIONS = this._ROOT + "readSecurityQuestionsLL.php";
-        public GET_USER_SECURITY_QUESTIONS = this._ROOT + "readUserSecurityQuestionsLL.php";
-        public UPDATE_SECURITY_QUESTIONS = this._ROOT + "updateSecurityQuestionsLL.php";
-        public CHECK_SECURITY_QUESTION_ANSWER = this._ROOT + "updatePassword.php";
-
-        public UPDATE_PIN = this._ROOT + "updatePinLL.php";
-        public UPDATE_PW = this._ROOT + "updatePassword.php";
-
-        public GET_USER_GOALS_URL = this._ROOT + "readUserGcreaoals.php";
-        public CREATE_GOALS_URL = this._ROOT + "createGoal.php";
-        public UPDATE_GOALS_URL = this._ROOT + "updateGoal.php";
-        public DELETE_GOALS_URL = this._ROOT + "deleteUserGoals.php";
-
-        public GET_CATEGORIES_URL = this._ROOT + "readCategories.php";
-        public GET_OBJECTIVES_URL = this._ROOT + "readObjectives.php";
-        public GET_LOCATIONS_URL = this._ROOT + "readLocations.php";
-        public GET_PEOPLE_URL = this._ROOT + "readPeople.php";
-
-        public GET_QUESTIONS_URL = this._ROOT + "readQuestions.php";
-        public CREATE_ANSWERS_URL = this._ROOT + "mainQuestionsLL.php";
-        public GET_USER_ANSWERS_URL = this._ROOT + "";
-
-        public BUG_REPORT_URL = this._ROOT + "createBugReportLL.php";
-
-        public ADD_INVENTORY_URL = this._ROOT + "createInventoryLL.php";
-        public UPDATE_INVENTORY_URL = this._ROOT + "topUpLL.php";
-        public GET_USER_INVENTORIES_URL = this._ROOT + "getInventoryLL.php";
-
-        public GET_USER_FEEDBACK_DATA_URL = this._ROOT + "feedbackLL.php";
+        public GET_HOME_ACTIVITY_URL = this._ROOT + "homeActivities.php";
     
         private headers: Headers = new Headers({});
         private options: RequestOptions;
@@ -230,6 +202,38 @@ export module Backend {
                 // button.disabled = false;
                 // window.plugins.toast.showLongBottom('Error getting users!')
             });
+        }
+
+        /**************************************************************/
+        /******************* Security questions page ******************/
+        /**************************************************************/
+        
+        // Load all security questions
+        public getHomeActivities(http, storage, list) {
+            http.get(this.GET_HOME_ACTIVITY_URL,this.options)
+                .subscribe( data => {
+                    var dbData = data.json();
+                    console.log("Got activities:");
+                    console.log(dbData);
+
+                    // storage.set('allHomeActivities', dbData);
+
+                    for (let i=0; i<dbData.length; i++) {
+                        let activity = dbData[i];
+                        list.push(activity);
+                    }
+                    console.log(list);
+                    // for (let d in dbData) {
+                    //     console.log(dbData[d]);
+                    //     let activity = dbData[d];
+                    //     list.push(activity);
+                    // }
+                    // for (let x in list) {
+                    //     console.log(x);
+                    // }
+                }, error => {
+                    console.log("Could not get home activities");
+                })
         }
 
         /**************************************************************/

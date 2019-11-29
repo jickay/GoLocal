@@ -5,6 +5,8 @@ import { Storage } from '@ionic/storage';
 
 import { FirebaseProvider } from '../../providers/firebase';
 import { map } from 'rxjs/operators';
+import { Http, Headers, RequestOptions } from '@angular/http';
+import { Backend } from '../../app/ajax';
 
 import { DashboardPage } from '../dashboard/dashboard';
 import { AboutPage } from '../about/about';
@@ -50,24 +52,37 @@ export class HomePage {
   private activities_cat5 = [];
   private activities_cat6 = [];
 
+  private Ajax;
+
   constructor(public navCtrl: NavController, public modalCtrl: ModalController,
-     public fbProvider: FirebaseProvider, public storage: Storage, public navParams: NavParams) {
+     public fbProvider: FirebaseProvider, public storage: Storage, public navParams: NavParams,
+     public http: Http) {
     
     this.loggedIn = this.navParams.get('loggedIn');
-    // Get list from Firestore
-    this.activitiesDB = this.fbProvider.getActivities();
-    // Convert Firestore object to normal object
-    this.activitiesDB.subscribe(actions => {
-      this.activities_regular = [];
-      actions.forEach(action => {
-        console.log(action.payload.doc.data());
-        const value = action.payload.doc.data();
-        const id = action.payload.doc.id;
-        this.addToActivityArray(id,value.category,value);
-      });
-    })
-    console.log(this.activities_regular);
-    console.log(this.activities_featured);
+   
+    // this.Ajax = new Backend.Ajax(http);
+    // this.Ajax.getHomeActivities(http, storage, this.activities_featured);
+
+    // storage.get('allHomeActivities').then( data => {
+    //   for (let activity in data) {
+    //     this.activities_featured.push(activity);
+    //   }
+    // });
+
+     // Get list from Firestore
+     this.activitiesDB = this.fbProvider.getActivities();
+     // Convert Firestore object to normal object
+     this.activitiesDB.subscribe(actions => {
+       this.activities_regular = [];
+       actions.forEach(action => {
+         console.log(action.payload.doc.data());
+         const value = action.payload.doc.data();
+         const id = action.payload.doc.id;
+         this.addToActivityArray(id,value.category,value);
+       });
+     })
+     console.log(this.activities_regular);
+     console.log(this.activities_featured);
   }
 
   addToActivityArray(id,category,activityInfo) {

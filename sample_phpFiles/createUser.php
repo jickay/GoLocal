@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
             VALUES (:username, :password, :usertype);";
     $sql_get_pass = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
     $sql_get_pass->execute(array(':username' => $username,':password' => $password,':usertype' => $usertype));
-    $user = $sql_get_pass->fetch(PDO::FETCH_ASSOC);
+    $rows = $sql_get_pass->fetch(PDO::FETCH_ASSOC);
 
     // return the id, and pin of the logged in user
     $send = array(
