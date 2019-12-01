@@ -23,6 +23,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
     $sql_get_pass->execute(array(':username' => $username,':password' => $password,':usertype' => $usertype));
     $rows = $sql_get_pass->fetch(PDO::FETCH_ASSOC);
 
+    // create empty profile associated with username (for later editing)
+    $sql = "INSERT INTO profile (username)
+            VALUES (:username);";
+    $sql_create_profile = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+    $sql_create_profile->execute(array(':username' => $username));
+
     // return the id, and pin of the logged in user
     $send = array(
       'username' => $username,
