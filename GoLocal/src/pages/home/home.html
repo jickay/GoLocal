@@ -26,7 +26,7 @@
       <img class = "cover-logo" src = "assets/imgs/GoLocalLogo.png"/>
     </ion-slide>
   </ion-slides>
-  <div class="button-bar">
+  <!-- <div class="button-bar">
     <ion-row>
       <ion-col col-2 class="cat-container cat-1"><div style="background-color:red" class="category" (click)="showCategory(1)">
         <ion-icon name="pizza"></ion-icon>
@@ -47,9 +47,9 @@
           <ion-icon name="moon"></ion-icon>
       </div><p class="cat-text">Night</p></ion-col>
     </ion-row>
- </div>
+ </div> -->
 
-  <div class="heading" *ngIf="categorySelected > 0"><h1>{{categoryHeading}}</h1></div>
+  <!-- <div class="heading" *ngIf="categorySelected > 0"><h1>{{categoryHeading}}</h1></div>
   <ion-row class="category-row" *ngIf="categorySelected > 0">
     
     <ion-row class="activity-row">
@@ -69,24 +69,25 @@
 
   <div class = "heading">
     <h1>Featured</h1>
-  </div>
+  </div> -->
   <ion-row class="category-row">
 
       <ion-row class="activity-row">
           <div class="activity-container" *ngFor="let activity of activities_featured" (click)="goToActivity(activity)">
-            <ion-row class="activity-header"><img src = {{activity.val.images[0].file}}/></ion-row>
+            <!-- <ion-row class="activity-header"><img src = {{activity.val.images[0].file}}/></ion-row> -->
             <ion-row class="activity-footer">
               <ion-item class="line" text-wrap>
-                {{activity.val.title}} <span item-end class="activity-price">${{activity.val.price}} </span>
+                {{activity.title}} 
+                <span item-end class="activity-price">${{activity.price}} </span>
               </ion-item>
-              <p>{{activity.val.description}}</p>
+              <p>{{activity.description}}</p>
             </ion-row>
           </div>
       </ion-row>
       
   </ion-row>
 
-  <div class = "heading">
+  <!-- <div class = "heading">
     <h1>Popular</h1>
   </div>
   <ion-row class="category-row">
@@ -103,7 +104,7 @@
           </div>
       </ion-row>
       
-  </ion-row>
+  </ion-row> -->
 
   <div class="footer">Copyright GoLocal 2018</div>
 </ion-content>

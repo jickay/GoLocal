@@ -81,7 +81,7 @@
 
       <!-- Category -->
 
-      <ion-row>
+      <!-- <ion-row>
         <ion-col col-2><div class="category">Category:</div> </ion-col>
         <ion-col col-6 class="category">
             <ion-select [(ngModel)]="activity.category" interface="popover" placeholder="Activity Category">
@@ -89,7 +89,7 @@
               </ion-select>
             </ion-col>
         
-      </ion-row>
+      </ion-row> -->
 
       <!-- Description -->
       <ion-row>
@@ -112,9 +112,9 @@
       <ion-row><div class="guide-name">{{guideData.name}}</div></ion-row>
       <!-- <ion-row><div class="guide-subtitle">{{guideData.subtitle}}</div></ion-row> -->
       <ion-row><div class="guide-contact">{{guideData.contact}}</div></ion-row>
-      <p class = "guide-date" *ngIf="!isGuide">Start Date</p>
+      <p class = "guide-date" *ngIf="isGuide">Start Date</p>
       <ion-row><div class="guide-bio">{{guideData.bio}}</div></ion-row>
-      <ion-row class = "guide-booking" *ngIf="!isGuide">
+      <ion-row class = "guide-booking" *ngIf="isGuide">
         <ion-select [(ngModel)]="start-month" interface="popover" placeholder="month">
           <ion-option *ngFor="let val of months" value="{{val}}">{{val}}</ion-option>
         </ion-select>
@@ -123,8 +123,8 @@
         </ion-select>
       </ion-row>
 
-      <p class = "guide-date" *ngIf="!isGuide">End Date</p>
-      <ion-row class = "guide-booking" *ngIf="!isGuide">
+      <p class = "guide-date" *ngIf="isGuide">End Date</p>
+      <ion-row class = "guide-booking" *ngIf="isGuide">
         <ion-select [(ngModel)]="end-month" interface="popover" placeholder="month">
           <ion-option *ngFor="let val of months" value="{{val}}">{{val}}</ion-option>
         </ion-select>

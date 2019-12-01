@@ -82,17 +82,16 @@ export class DashboardPage {
       let id = user.id;
       const activity = {
         id: null,
-        val: {
-          title: "Click edit button to change title",
-          price: 0,
-          description: "Click edit button to change description",
-          guide: id
-        }
+        title: "Click edit button to change title",
+        price: 0,
+        description: "Click edit button to change description",
+        guide: id
       }
       this.navCtrl.push(ActivityPage, {
-        userType: 1,
-        activity: activity
-      })
+        loggedIn: this.loggedIn,
+        userType: 1, 
+        activity: activity,
+      });
     })
     
   }

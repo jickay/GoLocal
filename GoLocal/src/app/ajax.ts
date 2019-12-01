@@ -39,7 +39,8 @@ export module Backend {
         public CHANGE_USER_PW = this._ROOT + "changeUserPassword.php";
 
         public GET_HOME_ACTIVITY_URL = this._ROOT + "homeActivities.php";
-    
+        public CREATE_ACTIVITY_URL = this._ROOT + "createActivity.php";
+
         private headers: Headers = new Headers({});
         private options: RequestOptions;
 
@@ -224,5 +225,40 @@ export module Backend {
             });
         }
 
+         /**************************************************************/
+        /************************* Activities *************************/
+        /**************************************************************/
+        
+        public getHomeActivities(http,storage,list) {
+            http.get(this.GET_HOME_ACTIVITY_URL,{},this.options)
+                .subscribe( data => {
+                    console.log("Home activities: ");
+                    console.log(data.json());
+
+                    storage.set('homeActivities',data.json());
+                    // var response = data.json();
+                    // this.getUserSecurityQuestions(http,options,navCtrl,response.user_ID);
+                    // localStorage.set('user_ID',response.user_ID);
+                }, error => {
+                    console.log("Could not get user ID");
+                })
+        }
+
+        public createActivity(http,storage,newData) {
+            http.post(this.CREATE_ACTIVITY_URL,newData,this.options)
+                .subscribe( data => {
+                    console.log("New activity ID: ");
+                    console.log(data.json());
+
+                    // storage.set('homeActivities',data.json());
+                    // var response = data.json();
+                    // this.getUserSecurityQuestions(http,options,navCtrl,response.user_ID);
+                    // localStorage.set('user_ID',response.user_ID);
+                }, error => {
+                    console.log("Could not get user ID");
+                })
+        }
+
     }
+    
 }

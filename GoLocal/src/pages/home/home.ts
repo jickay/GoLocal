@@ -61,8 +61,8 @@ export class HomePage {
     
     this.loggedIn = this.navParams.get('loggedIn');
    
-    // this.Ajax = new Backend.Ajax(http);
-    // this.Ajax.getHomeActivities(http, storage, this.activities_featured);
+    this.Ajax = new Backend.Ajax(http);
+    this.Ajax.getHomeActivities(http, storage, this.activities_featured);
 
     // storage.get('allHomeActivities').then( data => {
     //   for (let activity in data) {
@@ -70,20 +70,20 @@ export class HomePage {
     //   }
     // });
 
-     // Get list from Firestore
-     this.activitiesDB = this.fbProvider.getActivities();
-     // Convert Firestore object to normal object
-     this.activitiesDB.subscribe(actions => {
-       this.activities_regular = [];
-       actions.forEach(action => {
-         console.log(action.payload.doc.data());
-         const value = action.payload.doc.data();
-         const id = action.payload.doc.id;
-         this.addToActivityArray(id,value.category,value);
-       });
-     })
-     console.log(this.activities_regular);
-     console.log(this.activities_featured);
+    //  // Get list from Firestore
+    //  this.activitiesDB = this.fbProvider.getActivities();
+    //  // Convert Firestore object to normal object
+    //  this.activitiesDB.subscribe(actions => {
+    //    this.activities_regular = [];
+    //    actions.forEach(action => {
+    //      console.log(action.payload.doc.data());
+    //      const value = action.payload.doc.data();
+    //      const id = action.payload.doc.id;
+    //      this.addToActivityArray(id,value.category,value);
+    //    });
+    //  })
+    //  console.log(this.activities_regular);
+    //  console.log(this.activities_featured);
   }
 
   addToActivityArray(id,category,activityInfo) {
@@ -112,6 +112,11 @@ export class HomePage {
         this.userType = user.usertype;
         this.logInButton = user + "'s Profile";
       }
+    })
+
+    this.storage.get('homeActivities').then( activities => {
+      console.log(activities);
+      this.activities_featured = activities;
     })
   }
 

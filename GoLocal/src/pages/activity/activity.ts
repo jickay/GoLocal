@@ -6,6 +6,8 @@ import { FileUploader } from 'ng2-file-upload';
 
 import { FirebaseProvider } from '../../providers/firebase';
 import { FirebaseApp } from 'angularfire2';
+import { Http, Headers, RequestOptions } from '@angular/http';
+import { Backend } from '../../app/ajax';
 
 import { AboutPage } from '../about/about';
 import { ProfilePage } from '../profile/profile';
@@ -44,13 +46,14 @@ export class ActivityPage {
   // Store and list of categories
   private categories = ["Food","Scenic","Music","Active","Casual","Night"];
 
-  private activity_ID = "";
+  private activity_ID = null;
   private activity = {
     title: "Activity Title",
     price: 100,
     description: "Bunch of stuff goes here",
-    guide: 0,
-    category: -1
+    guide: "",
+    category: -1,
+    location: "Calgary"
   }
 
   private guideData = {
@@ -63,41 +66,50 @@ export class ActivityPage {
   private months = [1,2,3,4,5,6,7,8,9,10,11,12];
   private days = [];
 
-  constructor(public navCtrl: NavController, public navParams: NavParams,
+  private Ajax;
+
+  constructor(public navCtrl: NavController, public navParams: NavParams, public http: Http,
     public modalCtrl: ModalController, public storage: Storage, public alertCtrl: AlertController,
     public fbProvider: FirebaseProvider, private fbApp: FirebaseApp, private afs: AngularFirestore) {
 
       console.log("Constructing activity");
       // Get data about activity from previous page
       let activity = navParams.get('activity');
-      let userType = navParams.get('usertype');
+      let userType = navParams.get('userType');
       this.loggedIn = navParams.get('loggedIn');
+      // console.log(activity);
+      // console.log(userType, this.loggedIn);
 
       // Check if guide or not to turn on editing
       if (userType == 1) {
         this.isGuide = true;
+        console.log(this.activity);
       } else {
         this.isGuide = false;
+          
+        // Set local variables to activity info
+        this.activity_ID = activity.id;
+        this.activity = activity;
       }
+      console.log("is guide: " + this.isGuide);
 
-      // Set local variables to activity info
-      this.activity_ID = activity.id;
-      this.activity = activity.val;
-      if (activity.val.images) {
-        this.imageQueue = activity.val.images;
-      }
+      // if (activity.val.images) {
+      //   this.imageQueue = activity.val.images;
+      // }
 
-      this.fbProvider.getGuideInfo(this.activity.guide)
-      .subscribe( guide => {
-          console.log("After getting guide info:");
-          const value = guide.payload.data();
-          let data = {
-            name: value['name'],
-            contact: value['contact'],
-            image: value['image']
-          }
-          this.guideData = data;
-        });
+      this.Ajax = new Backend.Ajax(http);
+
+      // this.fbProvider.getGuideInfo(this.activity.guide)
+      // .subscribe( guide => {
+      //     console.log("After getting guide info:");
+      //     const value = guide.payload.data();
+      //     let data = {
+      //       name: value['name'],
+      //       contact: value['contact'],
+      //       image: value['image']
+      //     }
+      //     this.guideData = data;
+      //   });
 
       for (var i=0; i<31; i++) { this.days.push(i); }
   }
@@ -156,15 +168,17 @@ export class ActivityPage {
     // If adding new activity there will be no ID
     this.storage.get('user').then( user => {
       let ID = this.activity_ID;
-      let guide = user.id;
+      this.activity.guide = user.username;
       if (ID != null) {
         console.log("Updating activity");
-        this.fbProvider.updateActivity(ID,this.activity.title,this.activity.category,this.activity.description,this.activity.price,guide,this.imageQueue);
+        // this.fbProvider.updateActivity(ID,this.activity.title,this.activity.category,this.activity.description,this.activity.price,guide,this.imageQueue);
         this.navCtrl.pop();
       } else {
         console.log("Adding new activity");
-        this.activity_ID = this.fbProvider.addActivity(this.activity.title,this.activity.category,this.activity.description,this.activity.price,guide,this.imageQueue);
-        this.navCtrl.pop();
+        console.log(this.activity);
+        // this.activity_ID = this.fbProvider.addActivity(this.activity.title,this.activity.category,this.activity.description,this.activity.price,guide,this.imageQueue);
+        this.Ajax.createActivity(this.http,this.navCtrl,this.activity)
+        // this.navCtrl.pop();
       }
     })
   }
