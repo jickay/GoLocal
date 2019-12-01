@@ -26,6 +26,7 @@ export class HomePage {
 
   private loggedIn = false;
   private logInButton = "Create Account/Log In";
+  private userType = 0;
 
   private activities = [
     { image: "assets/imgs/1.jpg", title: 'Activity ', price: 100, description: 'This is a kind of activity description with all the things that you can do!' },
@@ -108,7 +109,8 @@ export class HomePage {
     this.storage.get('user').then( user => {
       if (loggedIn) {
         this.loggedIn = true;
-        this.logInButton = user.val.name + "'s Profile";
+        this.userType = user.usertype;
+        this.logInButton = user + "'s Profile";
       }
     })
   }
@@ -152,7 +154,7 @@ export class HomePage {
     console.log(activity);
     this.navCtrl.push(ActivityPage, {
       loggedIn: this.loggedIn,
-      userType: 0, 
+      userType: this.userType, 
       activity: activity,
     });
   }

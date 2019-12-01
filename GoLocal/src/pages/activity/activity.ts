@@ -70,7 +70,7 @@ export class ActivityPage {
       console.log("Constructing activity");
       // Get data about activity from previous page
       let activity = navParams.get('activity');
-      let userType = navParams.get('userType');
+      let userType = navParams.get('usertype');
       this.loggedIn = navParams.get('loggedIn');
 
       // Check if guide or not to turn on editing
