@@ -57,14 +57,14 @@
             </ion-item>
             <ion-item>
               <ion-label>Credit Card Number</ion-label>
-              <ion-input type="text" [(ngModel)]="payment.number" name="number"></ion-input>
+              <ion-input type="number" [(ngModel)]="payment.number" name="number"></ion-input>
             </ion-item>
             <ion-item>
               <ion-label>Expiration Date</ion-label>
-              <ion-select [(ngModel)]="expiration-month" interface="popover" placeholder="month" name="expiration-month">
+              <ion-select [(ngModel)]="payment.month" interface="popover" placeholder="month" name="expiration-month">
                 <ion-option *ngFor="let val of months" value="{{val}}">{{val}}</ion-option>
               </ion-select>
-              <ion-select [(ngModel)]="expiration-date" interface="popover" placeholder="date" name="expiration-date">
+              <ion-select [(ngModel)]="payment.date" interface="popover" placeholder="date" name="expiration-date">
                 <ion-option *ngFor="let val of days" value="{{val}}">{{val}}</ion-option>
               </ion-select>
             </ion-item>
@@ -74,7 +74,7 @@
 
     <ion-col col-3 class="activity-sidebar">
       <div class="activity-info">
-        <ion-row><div class="activity-image" [style.background-image]="'url('+activity.images[0].file+')'"></div></ion-row>
+        <!-- <ion-row><div class="activity-image" [style.background-image]="'url('+activity.images[0].file+')'"></div></ion-row> -->
         <ion-row><div class="activity-title">{{activity.title}}</div></ion-row>
         <!-- <ion-row><div class="activity-date">{{activity.date}}</div></ion-row> -->
         <!-- <ion-row><div class="activity-time">{{activity.time}}</div></ion-row> -->

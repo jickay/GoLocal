@@ -3,6 +3,8 @@ import { NavController, ModalController, NavParams } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 
 import { FirebaseProvider } from '../../providers/firebase';
+import { Http, Headers, RequestOptions } from '@angular/http';
+import { Backend } from '../../app/ajax';
 
 import { HomePage } from '../home/home';
 import { CreateAccountPage } from '../createAccount/createAccount';
@@ -28,10 +30,18 @@ export class PaymentPage {
   private payment = {};
 
   private months = [1,2,3,4,5,6,7,8,9,10,11,12];
-  private days = [1,2,3,4,5,6,7,8,9,10,11,12];
+  private days = [1,2,3,4,5,6,7,8,9,10,
+    11,12,13,14,15,16,17,18,19,20,
+    21,22,23,24,25,26,27,28,29,30,31];
+
+  private Ajax;
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
-    public modalCtrl: ModalController, public fbProvider: FirebaseProvider, public storage: Storage) {
+    public modalCtrl: ModalController, public fbProvider: FirebaseProvider, 
+    public http: Http, public storage: Storage) {
+    
+    this.Ajax = new Backend.Ajax(http);
+
     let activity = this.navParams.get('activity');
     let activity_ID = this.navParams.get('ID');
     let guide = this.navParams.get('guide');
@@ -59,9 +69,13 @@ export class PaymentPage {
 
   onConfirm() {
     this.storage.get('user').then( user => {
-      this.fbProvider.bookActivity(this.activity.id,user.id);
+      // this.fbProvider.bookActivity(this.activity.id,user.id);
+      this.payment['type'] = parseInt(this.payment['type']);
+      this.payment['username'] = user.username;
+      this.payment['amount'] = this.activity.price;
+      this.Ajax.bookActivity(this.http,this.storage,this.navCtrl,this.payment);
     })
-    this.navCtrl.setRoot(HomePage, { loggedIn: true });
+    // this.navCtrl.setRoot(HomePage, { loggedIn: true });
   }
 
 }

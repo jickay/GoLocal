@@ -3,6 +3,8 @@ import { NavController, ModalController, NavParams } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 
 import { FirebaseProvider } from '../../providers/firebase';
+import { Http, Headers, RequestOptions } from '@angular/http';
+import { Backend } from '../../app/ajax';
 
 import { AboutPage } from '../about/about';
 import { ProfilePage } from '../profile/profile';
@@ -25,46 +27,63 @@ export class DashboardPage {
   private activitiesDBAll;
   private activitiesDBBooked;
 
-  private activitiesData = [];
+  private activitiesAll = [];
   private activitiesBooked = [];
 
-  constructor(public navCtrl: NavController, public modalCtrl: ModalController,  public fbProvider: FirebaseProvider, public storage: Storage, public navParams: NavParams) {
+  private Ajax;
+
+  constructor(public navCtrl: NavController, public modalCtrl: ModalController, public http: Http, 
+    public fbProvider: FirebaseProvider, public storage: Storage, public navParams: NavParams) {
+    
+    this.Ajax = new Backend.Ajax(http);
+    
     this.username = this.navParams.get('name')
     this.logInButton = this.username + "'s Profile";
     
     this.storage.get('user').then( user => {
-      let guideID = user.id;
+      let guideID = user.username;
       console.log(guideID);
 
-      // Get all guide's activities from Firestore
-      this.activitiesDBAll = this.fbProvider.getGuideActivities(guideID);
-      // Convert Firestore object to normal object
-      this.activitiesDBAll.subscribe(activities => {
-        this.activitiesData = [];
-        this.activitiesBooked = [];
-        activities.forEach(activity => {
-          console.log(activity.payload.doc.data());
-          const value = activity.payload.doc.data();
-          const id = activity.payload.doc.id;
-          let traveller = value['traveller'];
-          if (traveller) {
-            this.activitiesBooked.push({
-              id: id,
-              val: value
-            });
-          } else {
-            this.activitiesData.push({
-              id: id,
-              val: value
-            });
-          }
+      this.Ajax.getDashboardActivities(http,storage,{username:guideID},this.activitiesAll,this.activitiesBooked);
+
+      // // Get all guide's activities from Firestore
+      // this.activitiesDBAll = this.fbProvider.getGuideActivities(guideID);
+      // // Convert Firestore object to normal object
+      // this.activitiesDBAll.subscribe(activities => {
+      //   this.activitiesData = [];
+      //   this.activitiesBooked = [];
+      //   activities.forEach(activity => {
+      //     console.log(activity.payload.doc.data());
+      //     const value = activity.payload.doc.data();
+      //     const id = activity.payload.doc.id;
+      //     let traveller = value['traveller'];
+      //     if (traveller) {
+      //       this.activitiesBooked.push({
+      //         id: id,
+      //         val: value
+      //       });
+      //     } else {
+      //       this.activitiesData.push({
+      //         id: id,
+      //         val: value
+      //       });
+      //     }
           
-        });
-      })
-      console.log(this.activitiesData);
+      //   });
+      // })
+      // console.log(this.activitiesData);
       
     })
     
+  }
+
+  ionViewWillEnter() {
+    this.storage.get('dashboardActivities').then( activities => {
+      for (let i=0; i<activities.length; i++) {
+        let a = activities[i];
+        a['avail'] == 1 ? this.activitiesAll.push(a) : this.activitiesBooked.push(a);
+      }
+    })
   }
 
   createAccountModal() {

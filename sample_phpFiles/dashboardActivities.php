@@ -2,14 +2,24 @@
 
 require_once 'requireAll.php';
 
-if ($_SERVER['REQUEST_METHOD'] == 'GET'){                                                     
+if ($_SERVER['REQUEST_METHOD'] == 'POST'){     
+    
+    $json = file_get_contents('php://input');    //Retrive sent json object
+    $obj = json_decode($json);
+
+    // date_default_timezone_set('America/Edmonton'); // Set timezone
+    // $date = date('Y-m-d H:i:s', time());           // Gets date automatically
+
+    // Just need to change these to get correct values
+    $username = filter_var($obj->username, FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_LOW); 
 
     $sql = 'SELECT *
-            FROM activity_package';
+            FROM activity_package
+            WHERE host_user = :username';
             // -- FROM activity_package AS A, picture AS P
             // -- WHERE A.activity_id = P.activity_id';
     $stmt = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-    $stmt->execute();
+    $stmt->execute(array(':username' => $username));
 
     $send = array();
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
