@@ -110,7 +110,7 @@ export class HomePage {
       if (loggedIn) {
         this.loggedIn = true;
         this.userType = user.usertype;
-        this.logInButton = user + "'s Profile";
+        this.logInButton = user.username + "'s Profile";
       }
     })
 

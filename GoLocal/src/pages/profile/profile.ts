@@ -22,7 +22,7 @@ export class ProfilePage {
     url: "",
     autoUpload: true
   });
-  private profileImage = "";
+  private profileImage;
 
   private editProfile = false;
 
@@ -38,34 +38,26 @@ export class ProfilePage {
 
   private Ajax;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public storage: Storage,
+  constructor(public navCtrl: NavController, public navParams: NavParams, public storage: Storage, 
     public http: Http, public fbProvider: FirebaseProvider) {
-
-      this.Ajax = new Backend.Ajax(http);
-
     this.editProfile = this.navParams.get('myProfile');
     // Check if user has stored profile details to display
+
+    this.Ajax = new Backend.Ajax(http);
+
+  }
+
+  ionViewWillEnter() {
+        
     this.storage.get('user').then( user => {
       console.log(user);
-      if (user.val.name) {
-        this.profile.name = user.val.name;
-        if (user.val.image) {
-          this.profileImage = user.val.image;
-        }
-        if (user.val.bio) {
-          this.profile.bio = user.val.bio;
-        } else {
-          this.profile.bio = "Tell us something about yourself like your personal interests or travel goals";
-        }
-      }
-      // Get user's activities that they booked
-      this.fbProvider.getUserActivities(user.id).subscribe(actions => {
-        actions.forEach(action => {
-          console.log(action);
-          const value = action.payload.doc.data();
-          this.activities_user.push(value)
-        });
-      })
+      let data = { username: user.username };
+      this.Ajax.getProfile(this.http,this.storage,data);
+      this.Ajax.getBookedActivities(this.http,this.storage,data)
+    });
+
+    this.storage.get('profile').then( profile => {
+      this.profile = profile;
     })
   }
 
@@ -89,16 +81,21 @@ export class ProfilePage {
     this.editingName = true;
   }
 
-  editDescription() {
+  editBio() {
     this.editingBio = true;
   }
 
   // When saving profile
   updateProfile() {
     this.storage.get('user').then( user => {
-      let ID = user.id;
-      let image = this.profileImage
-      this.Ajax.getProfile();
+      let data = {
+        username: user.username,
+        image: this.profileImage,
+        bio: this.profile.bio,
+        fname: this.profile.name
+      }
+      console.log("new profile data: ", data);
+      this.Ajax.upsertProfile(this.http,this.storage,data);
       // this.fbProvider.updateProfile(ID,this.profile.name,this.profile.bio,image);
     })
   }
@@ -122,6 +119,7 @@ export class ProfilePage {
           console.log(event);
           let imageURL = event['target']['result'];
           this.profileImage = imageURL;
+          console.log(imageURL);
         };
 
         fileReader.readAsDataURL(fileData);
