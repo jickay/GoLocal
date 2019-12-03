@@ -45,28 +45,6 @@ export class ProfilePage {
 
     this.Ajax = new Backend.Ajax(http);
 
-
-      
-
-      // if (user.val.name) {
-      //   this.profile.name = user.val.name;
-      //   if (user.val.image) {
-      //     this.profileImage = user.val.image;
-      //   }
-      //   if (user.val.bio) {
-      //     this.profile.bio = user.val.bio;
-      //   } else {
-      //     this.profile.bio = "Tell us something about yourself like your personal interests or travel goals";
-      //   }
-      // }
-      // Get user's activities that they booked
-    //   this.fbProvider.getUserActivities(user.id).subscribe(actions => {
-    //     actions.forEach(action => {
-    //       console.log(action);
-    //       const value = action.payload.doc.data();
-    //       this.activities_user.push(value)
-    //     });
-    //   })
   }
 
   ionViewWillEnter() {
@@ -74,7 +52,8 @@ export class ProfilePage {
     this.storage.get('user').then( user => {
       console.log(user);
       let data = { username: user.username };
-      this.Ajax.getProfile(this.http,this.storage,data,this.profile);
+      this.Ajax.getProfile(this.http,this.storage,data);
+      this.Ajax.getBookedActivities(this.http,this.storage,data)
     });
 
     this.storage.get('profile').then( profile => {

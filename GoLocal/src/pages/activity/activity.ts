@@ -148,7 +148,7 @@ export class ActivityPage {
     if (this.loggedIn) {
       console.log(this.activity);
       this.navCtrl.push(PaymentPage, {
-        ID: this.activity_ID,
+        activity_id: this.activity_ID,
         activity: this.activity,
         guide: this.guideData
       });

@@ -43,7 +43,7 @@ export class PaymentPage {
     this.Ajax = new Backend.Ajax(http);
 
     let activity = this.navParams.get('activity');
-    let activity_ID = this.navParams.get('ID');
+    let activity_ID = this.navParams.get('activity_id');
     let guide = this.navParams.get('guide');
 
     this.activity = activity;
@@ -73,6 +73,7 @@ export class PaymentPage {
       this.payment['type'] = parseInt(this.payment['type']);
       this.payment['username'] = user.username;
       this.payment['amount'] = this.activity.price;
+      this.payment['activity_id'] = this.activity.id;
       this.Ajax.bookActivity(this.http,this.storage,this.navCtrl,this.payment);
     })
     // this.navCtrl.setRoot(HomePage, { loggedIn: true });

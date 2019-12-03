@@ -38,14 +38,16 @@ export module Backend {
         public GET_USER_PW = this._ROOT + "getUserPassword.php";
         public CHANGE_USER_PW = this._ROOT + "changeUserPassword.php";
 
-        public GET_PROFILE = this._ROOT + "getProfile.php";
-
         public GET_HOME_ACTIVITY_URL = this._ROOT + "homeActivities.php";
         public CREATE_ACTIVITY_URL = this._ROOT + "createActivity.php";
         public BOOK_ACTIVITY_URL = this._ROOT + "bookActivity.php";
+        public GET_BOOKED_ACTIVITIES = this._ROOT + "getBookedActivities.php";
+        
+        public REVIEW_ACTIVITY = this._ROOT + "reviewActivities.php";
         
         public EDIT_PROFILE = this._ROOT + "editProfile.php";
         public GET_PROFILE = this._ROOT + "getProfile.php";
+        
 
         private headers: Headers = new Headers({});
         private options: RequestOptions;
@@ -205,14 +207,19 @@ export module Backend {
 
                     storage.set('dashboardActivities',obj);
 
-                    // for (let activity of obj) {
-                    //     console.log(activity['avail']);
-                    //     activity['avail'] == 1 ? listAll.push(activity) : listBooked.push(activity);
-                    // }
+                }, error => {
+                    console.log("Could not get Dashboard activities");
+                })
+        }
 
-                    // var response = data.json();
-                    // this.getUserSecurityQuestions(http,options,navCtrl,response.user_ID);
-                    // localStorage.set('user_ID',response.user_ID);
+        public getBookedActivities(http,storage,data,listAll,listBooked) {
+            http.get(this.GET_BOOKED_ACTIVITIES,data,this.options)
+                .subscribe( data => {
+                    let obj = data.json()
+                    console.log("Booked activities: ");
+                    console.log(obj);
+
+                    storage.set('bookedActivities',obj);
                 }, error => {
                     console.log("Could not get Dashboard activities");
                 })
@@ -254,9 +261,6 @@ export module Backend {
                     console.log("Could not book activity");
                 })
         }
-        /**************************************************************/
-        /************************* Profile *************************/
-        /**************************************************************/
 
         
           /**************************************************************/
@@ -277,7 +281,7 @@ export module Backend {
                 })
         }
 
-        public getProfile(http,storage,data,profile) {
+        public getProfile(http,storage,data) {
             http.post(this.GET_PROFILE,data,this.options)
                 .subscribe( data => {
                     let obj = data.json()
