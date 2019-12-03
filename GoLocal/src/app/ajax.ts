@@ -26,8 +26,8 @@ declare let cordova: any;
 export module Backend {
 
     export class Ajax {
-        // public _ROOT = "http://localhost/";
-        public _ROOT = "http://8e2b1222.ngrok.io/";
+         public _ROOT = "http://localhost/";
+        // public _ROOT = "http://8e2b1222.ngrok.io/";
 
         public GEN_CODES = this._ROOT + "createParticipantCodes.php";
 
@@ -37,6 +37,8 @@ export module Backend {
         public GET_USER_ID = this._ROOT + "getUserID.php";
         public GET_USER_PW = this._ROOT + "getUserPassword.php";
         public CHANGE_USER_PW = this._ROOT + "changeUserPassword.php";
+
+        public GET_PROFILE = this._ROOT + "getProfile.php";
 
         public GET_HOME_ACTIVITY_URL = this._ROOT + "homeActivities.php";
         public CREATE_ACTIVITY_URL = this._ROOT + "createActivity.php";
@@ -303,7 +305,24 @@ export module Backend {
                     console.log("Could not book activity");
                 })
         }
+        /**************************************************************/
+        /************************* Profile *************************/
+        /**************************************************************/
 
+        public getProfile(http,storage,list) {
+            http.get(this.GET_PROFILE,{},this.options)
+                .subscribe( data => {
+                    console.log("profile: ");
+                    console.log(data.json());
+
+                    storage.set('homeActivities',data.json());
+                    // var response = data.json();
+                    // this.getUserSecurityQuestions(http,options,navCtrl,response.user_ID);
+                    // localStorage.set('user_ID',response.user_ID);
+                }, error => {
+                    console.log("Could not get home activities");
+                })
+        }
     }
     
 }
