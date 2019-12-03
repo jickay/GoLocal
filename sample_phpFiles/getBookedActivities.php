@@ -17,13 +17,32 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET'){
 
     // TODO: Retrieve activity information after grabbing booking information.
 
+    
+    
     $send = array();
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         // echo $row;
-        $id = $row['activityID'];
+        $activity_id = $row['activityID'];
 
-        $arr = array(
+        $sql2 = 'SELECT *
+            FROM activity_package
+            WHERE activity_id = :id';
+            // -- FROM activity_package AS A, picture AS P
+            // -- WHERE A.activity_id = P.activity_id';
+         $stmt2 = $pdo->prepare($sql2, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+         $stmt2->execute(array(':id' => $activity_id));
+         $row2 = $stmt2->fetch(PDO::FETCH_ASSOC)
+        $id = $row2['activity_id'];
+        $title = $row2['title'];
+        $desc = $row2['description'];
+        $price = $row2['price'];
+        $avail = $row[2'availability'];
+         $arr = array(
             'id' => $id,
+            'title' => $title,
+            'description' => $desc,
+            'price' => $price,
+            'avail' => $avail
         );
         array_push($send, $arr);
        
