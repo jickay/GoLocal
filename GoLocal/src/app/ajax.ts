@@ -41,6 +41,9 @@ export module Backend {
         public GET_HOME_ACTIVITY_URL = this._ROOT + "homeActivities.php";
         public CREATE_ACTIVITY_URL = this._ROOT + "createActivity.php";
         public BOOK_ACTIVITY_URL = this._ROOT + "bookActivity.php";
+        
+        public EDIT_PROFILE = this._ROOT + "editProfile.php";
+        public GET_PROFILE = this._ROOT + "getProfile.php";
 
         private headers: Headers = new Headers({});
         private options: RequestOptions;
@@ -119,56 +122,20 @@ export module Backend {
                     console.log("New user:");
                     console.log(json);
 
+                    let returnData = {
+                        loggedIn: true
+                    }
                     if (json.usertype == 1) {
-                        navCtrl.setRoot(DashboardPage);
+                        navCtrl.setRoot(DashboardPage, returnData);
                     } else {
-                        navCtrl.setRoot(HomePage);
+                        navCtrl.setRoot(HomePage, returnData);
                     }
                 } catch (error) {
 
-                }
-
-            //         // Retreive all app content on successful creation of new user
-            //         // this.getAllQuestions(http,options,localStorage);
-            //         // this.getAllGoalParts(http,localStorage,options);
-
-            //         if (json.ID) {
-            //             // Store ID info locally
-            //             console.log("This is the users data:");
-            //             console.log(json);
-            //             // Store ID info locally
-            //             localStorage.set('user_ID', json.ID);
-            //             localStorage.set('username', json.username);
-            //             localStorage.set('pin', { loggedIn:true, number:json.pin });
-            //             // // Set notification values
-            //             // localStorage.set('notification', { hour:21, minute:0 });
-            //             // Set default data values
-            //             localStorage.set('answers',[]);
-            //             localStorage.set('userInventories',[]);
-            //             localStorage.set('feedbackData',{});
-            //             // Set default notifications (DISABLE FOR TESTING!!!)
-            //             this.setDailyNotification(21,0);
-
-            //             // navCtrl.push(CreateSecurityQuestions, { user_ID:json.ID });
-            //             navCtrl.setRoot(TabsPage, { isNewUser: false });
-            //         }
-            //     } catch (error) {
-            //         console.log("Error parsing user json")
-            //         console.log(data['_body']);
-            //         console.log("Could not read data after creating user.")
-            //     }                
-            // }, error => {
-            //     console.log("Error creating user")
-            //     console.log(error);
-            //     if (error.status == 421) {
-            //         console.log("Could not create new user, no ID");
-            //     } else if (error.status == 422) {
-            //         console.log("Could not create new user:\n\n" + error['_body']);
-            //         console.log("Username is taken!");
-            //     } else {
-            //         console.log("Was a problem creating new user")
-            //     }
-            //     button.disabled = false;
+                }      
+            }, error => {
+            // http error
+                console.log("http error: " + error);
             });
         }
 
@@ -186,7 +153,9 @@ export module Backend {
 
                     localStorage.set('user', {
                         username: json.username,
-                        usertype: json.usertype
+                        usertype: json.usertype,
+                        fname: newData.fname,
+                        lname: newData.fname,
                     });
 
                     if (json.usertype == 1) {
@@ -200,29 +169,9 @@ export module Backend {
                     // button.disabled = false;
                 }
 
-                // if (json.user_ID) {
-                //     console.log("Set local user ID: " + json.user_ID);
-                //     console.log("Set local pin to: " + json.pin);
-                //     console.log("Set local username to: " + json.username);
-                //     // Store ID info locally
-                //     localStorage.set('user_ID', json.user_ID);
-                //     localStorage.set('username', json.username);
-                //     localStorage.set('pin', { loggedIn:true, number:json.pin });
-                    
-                //     // Retreive all app content on successful login
-                //     this.getUserInventories(http, localStorage, json.user_ID);
-                //     //this.getUserAnswers(http, options, json.user_ID);
-
-                //     // Change root page to tabs page
-                //     navCtrl.setRoot(TabsPage);
-                
-                // }
-                // console.log("RECEIVED ALL DATA!!!");
             }, error => {
                 console.log(error);
-                // alert("Username/password is not working. Try again.");
-                // button.disabled = false;
-                // window.plugins.toast.showLongBottom('Error getting users!')
+
             });
         }
 
@@ -304,6 +253,40 @@ export module Backend {
                 })
         }
 
-    }
+        
+          /**************************************************************/
+        /************************* Profile *************************/
+        /**************************************************************/
+
+        public upsertProfile(http,storage,userData) {
+            http.post(this.EDIT_PROFILE,userData,this.options)
+                .subscribe( data => {
+                    let obj = data.json()
+                    console.log("Updated profile: ");
+                    console.log(obj);
+
+                    storage.set('profile',obj);
+
+                }, error => {
+                    console.log("Could not get Dashboard activities");
+                })
+        }
+
+        public getProfile(http,storage,data,profile) {
+            http.post(this.GET_PROFILE,data,this.options)
+                .subscribe( data => {
+                    let obj = data.json()
+                    console.log("User profile: ");
+                    console.log(obj);
+
+                    storage.set('profile',obj);
+                    // profile = obj;
+
+                }, error => {
+                    console.log("Could not get Dashboard activities");
+                })
+        }
+
+    } // End of ajax functions
     
 }

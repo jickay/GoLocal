@@ -53,7 +53,7 @@ export class ActivityPage {
     description: "Bunch of stuff goes here",
     guide: "",
     category: -1,
-    location: "Calgary"
+    location: "Calgary",
   }
 
   private guideData = {
@@ -93,9 +93,9 @@ export class ActivityPage {
       }
       console.log("is guide: " + this.isGuide);
 
-      // if (activity.val.images) {
-      //   this.imageQueue = activity.val.images;
-      // }
+      if (activity.images) {
+        this.imageQueue = activity.images;
+      }
 
       this.Ajax = new Backend.Ajax(http);
 
@@ -177,6 +177,7 @@ export class ActivityPage {
         console.log("Adding new activity");
         console.log(this.activity);
         // this.activity_ID = this.fbProvider.addActivity(this.activity.title,this.activity.category,this.activity.description,this.activity.price,guide,this.imageQueue);
+        // this.activity.images = this.imageQueue;
         this.Ajax.createActivity(this.http,this.navCtrl,this.activity)
         // this.navCtrl.pop();
       }
@@ -204,7 +205,7 @@ export class ActivityPage {
           text: 'Delete',
           handler: () => {
             console.log('Delete clicked');
-            this.fbProvider.removeActivity(this.activity_ID);
+            // this.fbProvider.removeActivity(this.activity_ID);
             this.navCtrl.setRoot(DashboardPage);
           }
         }
@@ -220,7 +221,7 @@ export class ActivityPage {
     let queue = this.uploader.queue;
     console.log(queue);
 
-    if (queue.length <= 3) {
+    if (queue.length <= 1) {
       queue.forEach( file => {
         const fileData = file._file;
         console.log(fileData.name);
@@ -230,17 +231,17 @@ export class ActivityPage {
         fileReader.onload = (event) => {
           console.log(event);
           let imageURL = event['target']['result'];
-          var image = {
-            file: imageURL,
-          };
-          this.imageQueue.push(image);
+          // var image = {
+          //   file: imageURL,
+          // };
+          this.activity['image'] = imageURL;
         };
 
         fileReader.readAsDataURL(fileData);
   
       });  
     } else {
-      alert("Too many images. Can only upload 3 per activity");
+      alert("Too many images. Can only upload 1 per activity");
       this.uploader.clearQueue();
       this.imageQueue = [];
     }

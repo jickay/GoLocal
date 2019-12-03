@@ -34,7 +34,8 @@ export class CreateAccountPage {
   private userType = 0;
  
 
-  private fullname = "";
+  private firstname = "";
+  private lastname = "";
   private contact = "";
 
   constructor(public navCtrl: NavController, public modalCtrl: ModalController, params: NavParams, public storage: Storage, public fbProvider: FirebaseProvider, public http: Http) {
@@ -61,11 +62,19 @@ export class CreateAccountPage {
     let data = {
       username: this.username,
       password: this.password,
-      usertype: this.userType
+      usertype: this.userType,
+      fname: this.firstname,
+      lname: this.lastname
     }
 
-    this.Ajax.createUser(this.http,this.storage,this.navCtrl,data);
+    let profileData = {
+      username: this.username,
+      fname: this.firstname,
+      lname: this.lastname
+    }
 
+    this.Ajax.createProfile(this.http,this.storage,profileData);
+    this.Ajax.createUser(this.http,this.storage,this.navCtrl,data);
 
     // user.snapshotChanges().subscribe( user => {
     //   console.log("User added");
