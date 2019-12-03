@@ -5,6 +5,8 @@ import { Storage } from '@ionic/storage';
 import { FileUploader } from 'ng2-file-upload';
 
 import { FirebaseProvider } from '../../providers/firebase';
+import { Http, Headers, RequestOptions } from '@angular/http';
+import { Backend } from '../../app/ajax';
 
 import { HomePage } from '../home/home';
 import { ActivityPage } from '../activity/activity';
@@ -34,7 +36,13 @@ export class ProfilePage {
 
   private activities_user = [];
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public storage: Storage, public fbProvider: FirebaseProvider) {
+  private Ajax;
+
+  constructor(public navCtrl: NavController, public navParams: NavParams, public storage: Storage,
+    public http: Http, public fbProvider: FirebaseProvider) {
+
+      this.Ajax = new Backend.Ajax(http);
+
     this.editProfile = this.navParams.get('myProfile');
     // Check if user has stored profile details to display
     this.storage.get('user').then( user => {
@@ -90,7 +98,8 @@ export class ProfilePage {
     this.storage.get('user').then( user => {
       let ID = user.id;
       let image = this.profileImage
-      this.fbProvider.updateProfile(ID,this.profile.name,this.profile.bio,image);
+      this.Ajax.getProfile();
+      // this.fbProvider.updateProfile(ID,this.profile.name,this.profile.bio,image);
     })
   }
 

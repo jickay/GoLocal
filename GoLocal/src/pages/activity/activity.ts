@@ -76,7 +76,7 @@ export class ActivityPage {
       // Get data about activity from previous page
       let activity = navParams.get('activity');
       let userType = navParams.get('userType');
-      this.loggedIn = navParams.get('loggedIn');
+      this.loggedIn = true;
       // console.log(activity);
       // console.log(userType, this.loggedIn);
 

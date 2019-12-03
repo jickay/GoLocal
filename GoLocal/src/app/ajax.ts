@@ -26,8 +26,8 @@ declare let cordova: any;
 export module Backend {
 
     export class Ajax {
-        // public _ROOT = "http://localhost/";
-        public _ROOT = "http://8e2b1222.ngrok.io/";
+         public _ROOT = "http://localhost/";
+        // public _ROOT = "http://8e2b1222.ngrok.io/";
 
         public GEN_CODES = this._ROOT + "createParticipantCodes.php";
 
@@ -38,8 +38,11 @@ export module Backend {
         public GET_USER_PW = this._ROOT + "getUserPassword.php";
         public CHANGE_USER_PW = this._ROOT + "changeUserPassword.php";
 
+        public GET_PROFILE = this._ROOT + "getProfile.php";
+
         public GET_HOME_ACTIVITY_URL = this._ROOT + "homeActivities.php";
         public CREATE_ACTIVITY_URL = this._ROOT + "createActivity.php";
+        public BOOK_ACTIVITY_URL = this._ROOT + "bookActivity.php";
 
         private headers: Headers = new Headers({});
         private options: RequestOptions;
@@ -240,7 +243,29 @@ export module Backend {
                     // this.getUserSecurityQuestions(http,options,navCtrl,response.user_ID);
                     // localStorage.set('user_ID',response.user_ID);
                 }, error => {
-                    console.log("Could not get user ID");
+                    console.log("Could not get home activities");
+                })
+        }
+
+        public getDashboardActivities(http,storage,data,listAll,listBooked) {
+            http.get(this.GET_HOME_ACTIVITY_URL,data,this.options)
+                .subscribe( data => {
+                    let obj = data.json()
+                    console.log("Dashboard activities: ");
+                    console.log(obj);
+
+                    storage.set('dashboardActivities',obj);
+
+                    // for (let activity of obj) {
+                    //     console.log(activity['avail']);
+                    //     activity['avail'] == 1 ? listAll.push(activity) : listBooked.push(activity);
+                    // }
+
+                    // var response = data.json();
+                    // this.getUserSecurityQuestions(http,options,navCtrl,response.user_ID);
+                    // localStorage.set('user_ID',response.user_ID);
+                }, error => {
+                    console.log("Could not get Dashboard activities");
                 })
         }
 
@@ -255,10 +280,49 @@ export module Backend {
                     // this.getUserSecurityQuestions(http,options,navCtrl,response.user_ID);
                     // localStorage.set('user_ID',response.user_ID);
                 }, error => {
-                    console.log("Could not get user ID");
+                    console.log("Could not create activity");
                 })
         }
 
+          /**************************************************************/
+        /************************* Booking and Payment *************************/
+        /**************************************************************/
+
+        public bookActivity(http,storage,navCtrl,newData) {
+            console.log(newData);
+            http.post(this.BOOK_ACTIVITY_URL,newData,this.options)
+                .subscribe( data => {
+                    console.log("Activity booked: ");
+                    console.log(data.json());
+
+                    // navCtrl.setRoot(HomePage, { loggedIn: true });
+
+                    // storage.set('homeActivities',data.json());
+                    // var response = data.json();
+                    // this.getUserSecurityQuestions(http,options,navCtrl,response.user_ID);
+                    // localStorage.set('user_ID',response.user_ID);
+                }, error => {
+                    console.log("Could not book activity");
+                })
+        }
+        /**************************************************************/
+        /************************* Profile *************************/
+        /**************************************************************/
+
+        public getProfile(http,storage,list) {
+            http.get(this.GET_PROFILE,{},this.options)
+                .subscribe( data => {
+                    console.log("profile: ");
+                    console.log(data.json());
+
+                    storage.set('homeActivities',data.json());
+                    // var response = data.json();
+                    // this.getUserSecurityQuestions(http,options,navCtrl,response.user_ID);
+                    // localStorage.set('user_ID',response.user_ID);
+                }, error => {
+                    console.log("Could not get home activities");
+                })
+        }
     }
     
 }
