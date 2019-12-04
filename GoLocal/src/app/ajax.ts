@@ -42,11 +42,14 @@ export module Backend {
         public CREATE_ACTIVITY_URL = this._ROOT + "createActivity.php";
         public BOOK_ACTIVITY_URL = this._ROOT + "bookActivity.php";
         public GET_BOOKED_ACTIVITIES = this._ROOT + "getBookedActivities.php";
+        public GET_DASHBOARD_ACTIVITIES = this._ROOT + "dashboardActivities.php";
         
         public REVIEW_ACTIVITY = this._ROOT + "reviewActivities.php";
         
         public EDIT_PROFILE = this._ROOT + "editProfile.php";
         public GET_PROFILE = this._ROOT + "getProfile.php";
+
+        public SAVE_IMAGE = this._ROOT + "saveImage.php";
         
 
         private headers: Headers = new Headers({});
@@ -199,7 +202,7 @@ export module Backend {
         }
 
         public getDashboardActivities(http,storage,data,listAll,listBooked) {
-            http.get(this.GET_HOME_ACTIVITY_URL,data,this.options)
+            http.post(this.GET_DASHBOARD_ACTIVITIES,data,this.options)
                 .subscribe( data => {
                     let obj = data.json()
                     console.log("Dashboard activities: ");
@@ -212,8 +215,8 @@ export module Backend {
                 })
         }
 
-        public getBookedActivities(http,storage,data,listAll,listBooked) {
-            http.get(this.GET_BOOKED_ACTIVITIES,data,this.options)
+        public getBookedActivities(http,storage,data) {
+            http.post(this.GET_BOOKED_ACTIVITIES,data,this.options)
                 .subscribe( data => {
                     let obj = data.json()
                     console.log("Booked activities: ");
@@ -251,7 +254,7 @@ export module Backend {
                     console.log("Activity booked: ");
                     console.log(data.json());
 
-                    // navCtrl.setRoot(HomePage, { loggedIn: true });
+                    navCtrl.setRoot(HomePage, { loggedIn: true });
 
                     // storage.set('homeActivities',data.json());
                     // var response = data.json();
@@ -277,7 +280,8 @@ export module Backend {
                     storage.set('profile',obj);
 
                 }, error => {
-                    console.log("Could not get Dashboard activities");
+                    console.log("Could not update profile");
+                    console.log(error);
                 })
         }
 
@@ -292,8 +296,25 @@ export module Backend {
                     // profile = obj;
 
                 }, error => {
-                    console.log("Could not get Dashboard activities");
+                    console.log("Could not get profile");
+                    console.log(error);
                 })
+        }
+
+        public saveImage(http,image) {
+            http.post(this.SAVE_IMAGE,image,this.options)
+            .subscribe( data => {
+                // let obj = data.json()
+                // console.log("User profile: ");
+                // console.log(obj);
+
+                // storage.set('profile',obj);
+                // profile = obj;
+
+            }, error => {
+                console.log("Could not save image");
+                console.log(error);
+            })
         }
 
     } // End of ajax functions

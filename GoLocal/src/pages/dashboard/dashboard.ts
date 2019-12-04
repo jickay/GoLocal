@@ -79,10 +79,19 @@ export class DashboardPage {
 
   ionViewWillEnter() {
     this.storage.get('dashboardActivities').then( activities => {
+      console.log(activities);
+      this.activitiesAll = [];
+      this.activitiesBooked = [];
       for (let i=0; i<activities.length; i++) {
         let a = activities[i];
-        a['avail'] == 1 ? this.activitiesAll.push(a) : this.activitiesBooked.push(a);
+        console.log(a.avail);
+        
+        a.avail ? this.activitiesAll.push(a) : this.activitiesBooked.push(a);
+        // this.activitiesAll = list;
+        
       }
+      console.log(this.activitiesAll);
+        console.log(this.activitiesBooked);
     })
   }
 

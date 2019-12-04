@@ -59,6 +59,12 @@ export class ProfilePage {
     this.storage.get('profile').then( profile => {
       this.profile = profile;
     })
+
+    this.storage.get('bookedActivities').then( activities => {
+      console.log("local booked activities: ");
+      console.log(activities);
+      this.activities_user = activities;
+    })
   }
 
   backToHome() {
@@ -111,14 +117,18 @@ export class ProfilePage {
     if (queue.length <= 1) {
       queue.forEach( file => {
         const fileData = file._file;
-        console.log(fileData.name);
+        console.log(file);
+
+        this.profileImage = file;
+
+        // this.Ajax.saveImage(this.http, file);
 
         var fileReader = new FileReader();
 
         fileReader.onload = (event) => {
           console.log(event);
           let imageURL = event['target']['result'];
-          this.profileImage = imageURL;
+          this.profileImage = imageURL.toString();
           console.log(imageURL);
         };
 
@@ -126,7 +136,7 @@ export class ProfilePage {
   
       });  
     } else {
-      alert("Too many images. Can only upload 3 per activity");
+      alert("Too many images. Can only upload 1 profile picture");
       this.uploader.clearQueue();
     }
   
