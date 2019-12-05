@@ -62,7 +62,6 @@ export class HomePage {
     this.loggedIn = this.navParams.get('loggedIn');
    
     this.Ajax = new Backend.Ajax(http);
-    this.Ajax.getHomeActivities(http, storage, this.activities_featured);
 
     // storage.get('allHomeActivities').then( data => {
     //   for (let activity in data) {
@@ -114,10 +113,22 @@ export class HomePage {
       }
     })
 
-    this.storage.get('homeActivities').then( activities => {
-      console.log(activities);
-      this.activities_featured = activities;
-    })
+    let postCall = this.Ajax.getHomeActivities(this.http, this.storage, this.activities_featured);
+    postCall.subscribe( data => {
+      console.log("Home activities: ");
+      console.log(data.json());
+
+      // this.storage.set('homeActivities',data.json());
+      
+      this.activities_featured = data.json();
+  }, error => {
+      console.log("Could not get home activities");
+  })
+
+    // this.storage.get('homeActivities').then( activities => {
+    //   console.log(activities);
+    //   this.activities_featured = activities;
+    // })
   }
 
   showCategory(category) {

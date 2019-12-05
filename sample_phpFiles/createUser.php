@@ -32,6 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
     // return the id, and pin of the logged in user
     $send = array(
       'username' => $username,
+      'password' => $password
     );
     http_response_code(200);
     echo json_encode($send);

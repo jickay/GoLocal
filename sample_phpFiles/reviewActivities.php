@@ -8,7 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
     $obj = json_decode($json);                  //decode JSON object
 
     $username = filter_var($obj->username, FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_LOW);    //Get the submitted username
-    $activityID = filter_var($obj->activityID, FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_LOW);    //Get the submitted passcode
+    $activityID = filter_var($obj->activity_id, FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_LOW);    //Get the submitted passcode
     $rating = filter_var($obj->rating, FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_LOW);  
     $comment = filter_var($obj->comment, FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_LOW);
 
@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
         PDO::ATTR_EMULATE_PREPARES => false,     //I know that emulation is important but not too sure how this relates 
     );                                                                            
 
-    $sql = "INSERT INTO review (username, activityID, rating, comment)
+    $sql = "INSERT INTO review (username, activity_id, rating, comment)
             VALUES (:username, :activityID, :rating, :comment);";
     $sql_get_pass = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
     $sql_get_pass->execute(array(':username' => $username, ':activityID' => $activityID, ':rating' => $rating, ':comment' => $comment));

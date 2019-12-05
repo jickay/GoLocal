@@ -52,19 +52,29 @@ export class ProfilePage {
     this.storage.get('user').then( user => {
       console.log(user);
       let data = { username: user.username };
-      this.Ajax.getProfile(this.http,this.storage,data);
-      this.Ajax.getBookedActivities(this.http,this.storage,data)
+      this.Ajax.getProfile(this.http,this.storage,data).subscribe( pdata => {
+        let profile = pdata.json()
+        console.log(profile);
+        this.profile = profile;
+        this.profileImage = profile.image;
+      });
+      this.Ajax.getBookedActivities(this.http,this.storage,data).subscribe( adata => {
+        let activities = adata.json();
+        console.log(activities);
+        this.activities_user = activities;
+      })
     });
 
-    this.storage.get('profile').then( profile => {
-      this.profile = profile;
-    })
+    // this.storage.get('profile').then( profile => {
+    //   this.profile = profile;
+    //   this.profileImage = profile.image;
+    // })
 
-    this.storage.get('bookedActivities').then( activities => {
-      console.log("local booked activities: ");
-      console.log(activities);
-      this.activities_user = activities;
-    })
+    // this.storage.get('bookedActivities').then( activities => {
+    //   console.log("local booked activities: ");
+    //   console.log(activities);
+    //   this.activities_user = activities;
+    // })
   }
 
   backToHome() {
@@ -101,7 +111,7 @@ export class ProfilePage {
         fname: this.profile.name
       }
       console.log("new profile data: ", data);
-      this.Ajax.upsertProfile(this.http,this.storage,data);
+      this.Ajax.upsertProfile(this.http,this.storage,this.navCtrl,data);
       // this.fbProvider.updateProfile(ID,this.profile.name,this.profile.bio,image);
     })
   }

@@ -11,6 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
     // $date = date('Y-m-d H:i:s', time());           // Gets date automatically
 
     // Just need to change these to get correct values
+    $activity_id = filter_var($obj->activity_id, FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_LOW);
     $account_num = filter_var($obj->number, FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_LOW);
     $username = filter_var($obj->username, FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_LOW); 
     $amount = filter_var($obj->amount, FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_LOW); 
@@ -27,7 +28,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
     $sql_get_pass = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
     $sql_get_pass->execute(array(':account_num' => $account_num, ':amount' => $amount,
                                  ':type' => $payment_type, ':username' => $username));
-    $rows = $sql_get_pass->fetch(PDO::FETCH_ASSOC);
+    $row = $sql_get_pass->fetch(PDO::FETCH_ASSOC);
+
+    $sql = "INSERT INTO booking (username, activity_id)
+            VALUES (:username, :activity_id);";
+    $sql_get_pass = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+    $sql_get_pass->execute(array(':username' => $username, ':activity_id' => $activity_id));
+    $row = $sql_get_pass->fetch(PDO::FETCH_ASSOC);
 
     // return the accountNum, username and amount paid of the logged in user
     $send = array(

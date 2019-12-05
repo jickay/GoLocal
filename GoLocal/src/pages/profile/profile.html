@@ -44,7 +44,7 @@
       <ion-row class="title">
         <ion-col col-8>
           <div class="name" *ngIf="!editingName" float-left>{{profile.fname}} {{profile.lname}}</div>
-          <div class="name" float-left><ion-input *ngIf="editingName" [(ngModel)]="profile.name"></ion-input></div>
+          <div class="name" float-left><ion-input *ngIf="editingName" [(ngModel)]="profile.fname"></ion-input></div>
           <div float-right>
             <button ion-button *ngIf="editProfile" (click)="editName()"><ion-icon name="create"></ion-icon></button>
           </div>
@@ -74,7 +74,7 @@
               <p class="no-activities" *ngIf="activities_user.length <= 0">No activities currently booked</p>
               <ion-row class="activity-row">
                   <div class="activity-container" *ngFor="let activity of activities_user" (click)="goToActivity(activity)">
-                    <!-- <ion-row class="activity-header"><img src = {{activity.images[0].file}}/></ion-row> -->
+                    <ion-row class="activity-header"><img src = {{activity.image}}/></ion-row>
                     <ion-row class="activity-footer">
                       <ion-item class="line" text-wrap>
                         {{activity.title}} <span item-end class="activity-price">${{activity.price}} CAD</span>

@@ -14,10 +14,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
     $username = filter_var($obj->username, FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_LOW); 
 
     $sql = 'SELECT *
-            FROM activity_package
-            WHERE host_user = :username';
-            // -- FROM activity_package AS A, picture AS P
-            // -- WHERE A.activity_id = P.activity_id';
+            FROM activity_package AS A, picture AS P
+            WHERE A.host_user = :username AND A.activity_id = P.activity_id';
     $stmt = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
     $stmt->execute(array(':username' => $username));
 
@@ -29,13 +27,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
         $desc = $row['description'];
         $price = $row['price'];
         $avail = $row['availability'];
+        $image = $row['img_data'];
 
         $arr = array(
             'id' => $id,
             'title' => $title,
             'description' => $desc,
             'price' => $price,
-            'avail' => $avail
+            'avail' => $avail,
+            'image' => $image
         );
         array_push($send, $arr);
        

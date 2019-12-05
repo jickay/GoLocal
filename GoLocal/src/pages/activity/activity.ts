@@ -66,6 +66,14 @@ export class ActivityPage {
   private months = [1,2,3,4,5,6,7,8,9,10,11,12];
   private days = [];
 
+  private reviews = [];
+  private newReview = {
+    rating: 0,
+    comment: ""
+  }
+  private rating = 0;
+  private comment = "";
+
   private Ajax;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public http: Http,
@@ -112,6 +120,45 @@ export class ActivityPage {
       //   });
 
       for (var i=0; i<31; i++) { this.days.push(i); }
+  }
+
+  ionViewWillEnter() {
+    console.log("Getting review for activity ", this.activity_ID);
+    this.reviews = [];
+    this.Ajax.getActivityReview(this.http,this.storage,{ activity_id: this.activity_ID })
+      .subscribe( rdata => {
+        let reviews = rdata.json();
+        console.log(reviews);
+        for (let r of reviews) {
+          let stars = [];
+          for (let i=0; i<r.rating; i++) {
+            stars.push(1);
+          }
+          while (stars.length < 5) {
+            stars.push(0);
+          }
+          r['stars'] = stars;
+        }
+        console.log(reviews);
+  
+        this.reviews = reviews;
+      });
+
+    // this.storage.get('reviews').then( reviews => {
+    //   for (let r of reviews) {
+    //     let stars = [];
+    //     for (let i=0; i<r.rating; i++) {
+    //       stars.push(1);
+    //     }
+    //     while (stars.length < 5) {
+    //       stars.push(0);
+    //     }
+    //     r['stars'] = stars;
+    //   }
+    //   console.log(reviews);
+
+    //   this.reviews = reviews;
+    // })
   }
  
   createAccountModal() {
@@ -256,6 +303,17 @@ export class ActivityPage {
     this.onUpload();
   }
 
+  addReview() {
+    this.storage.get('user').then( user => {
+      let data = {
+        username: user.username,
+        activity_id: this.activity_ID,
+        rating: this.rating,
+        comment: this.comment
+      }
+      this.Ajax.addReview(this.http,this.storage,data);
+    })
 
+  }
 
 }

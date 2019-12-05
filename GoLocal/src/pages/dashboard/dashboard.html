@@ -24,7 +24,7 @@
   </ion-row>
 
   <!-- Upcoming bookings -->
-  <ion-item class = "heading">
+  <!-- <ion-item class = "heading">
     <h1>Upcoming Bookings</h1>
   </ion-item>
   <ion-row class="category-row">
@@ -43,7 +43,7 @@
     
       </ion-row>
       
-  </ion-row>
+  </ion-row> -->
 
   <!-- Guide's Activities -->
   <ion-item class = "heading">
@@ -54,7 +54,7 @@
       <ion-row class="activity-row">
     
           <div class="activity-container" *ngFor="let activity of activitiesAll" (click)="goToActivity(activity)">
-            <!-- <ion-row class="activity-header"><img src = {{activity.val.images[0].file}}/></ion-row> -->
+            <ion-row class="activity-header"><img src = {{activity.image}}/></ion-row>
             <ion-row class="activity-footer">
               <ion-item class="line" text-wrap>
                 {{activity.title}} <span item-end class="activity-price">${{activity.price}}</span>

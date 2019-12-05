@@ -73,7 +73,7 @@ export class CreateAccountPage {
       lname: this.lastname
     }
 
-    this.Ajax.createProfile(this.http,this.storage,profileData);
+    this.Ajax.upsertProfile(this.http,this.storage,this.navCtrl,profileData);
     this.Ajax.createUser(this.http,this.storage,this.navCtrl,data);
 
     // user.snapshotChanges().subscribe( user => {

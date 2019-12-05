@@ -24,15 +24,15 @@
     <!-- Main Content -->
     <ion-col col-7 class="activity-details">
       <ion-row class="image-row">
-        <div class="image-empty" ng2FileDrop *ngIf="imageQueue.length < 1"
+        <!-- <div class="image-empty" ng2FileDrop *ngIf="imageQueue.length < 1"
               [ngClass]="{'nv-file-over': hasBaseDropZoneOver}"
               (onFileDrop)="dropImage($event)"
               [uploader]="uploader">
                 Drop your images here<br>or click the button below
-            </div>
-        <ion-col col-4 class="image-container" *ngFor="let image of imageQueue">
+            </div> -->
+        <ion-col col-4 class="image-container">
           <div class = "container" >
-          <img class = "activity-image" src="{{image.file}}" />
+          <img class = "activity-image" src="{{activity.image}}" />
             
           </div>
         </ion-col>
@@ -112,7 +112,7 @@
       <ion-row><div class="guide-name">{{guideData.name}}</div></ion-row>
       <!-- <ion-row><div class="guide-subtitle">{{guideData.subtitle}}</div></ion-row> -->
       <ion-row><div class="guide-contact">{{guideData.contact}}</div></ion-row>
-      <p class = "guide-date" *ngIf="isGuide">Start Date</p>
+      <!-- <p class = "guide-date" *ngIf="isGuide">Start Date</p>
       <ion-row><div class="guide-bio">{{guideData.bio}}</div></ion-row>
       <ion-row class = "guide-booking" *ngIf="isGuide">
         <ion-select [(ngModel)]="start-month" interface="popover" placeholder="month">
@@ -131,7 +131,7 @@
         <ion-select [(ngModel)]="end-day" interface="popover" placeholder="day">
           <ion-option *ngFor="let val of days" value="{{val}}">{{val}}</ion-option>
         </ion-select>
-      </ion-row>
+      </ion-row> -->
 
       <ion-row class = "book-save-delete">
         <button ion-button round *ngIf="!isGuide" (click)="onBook()">Book Now</button>
@@ -145,13 +145,35 @@
   </ion-row>
       
   <h2>Reviews</h2>
+  <ion-row *ngFor="let review of reviews">
+        <ion-col col-2>
+            <div>{{review.username}}</div>
+        </ion-col>
+        <ion-col col-2>
+            <div>
+              <ion-icon *ngFor="let s of review.stars" name="{{s == 1? 'star' : 'star-outline'}}"></ion-icon>
+            </div>
+        </ion-col>
+        <ion-col>
+          {{review.comment}}
+        </ion-col>
+
+  </ion-row>
+
+  <h3>Add Review</h3>
   <ion-row>
-    <ion-col col-4>
-      <p>username</p>
-      <p>rating</p>
-    </ion-col>
-    <ion-col>
-      Comment
+    <ion-col col-6>
+    <form (ngSubmit)="addReview()">
+      <ion-item>
+        <ion-label>Rating</ion-label>
+        <ion-input type="number" [(ngModel)]="rating" name="rating"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>Comment</ion-label>
+        <ion-textarea [(ngModel)]="comment" name="comment"></ion-textarea>
+      </ion-item>
+      <button ion-button type="submit" block>Add Review</button>
+    </form>
     </ion-col>
   </ion-row>
   

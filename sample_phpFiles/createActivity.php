@@ -12,6 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
     $price = filter_var($obj->price, FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_LOW); 
     $host = filter_var($obj->guide, FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_LOW); 
     $location = filter_var($obj->location, FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_LOW);
+    $image = filter_var($obj->image, FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_LOW);
 
     $opt = array(
         PDO::ATTR_ERRMODE  => PDO::ERRMODE_EXCEPTION,
@@ -19,10 +20,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
         PDO::ATTR_EMULATE_PREPARES => false,     //I know that emulation is important but not too sure how this relates 
     );                                                                            
 
+    // Add activity 
     $sql = "INSERT INTO activity_package (title, description, price, host_user, location)
             VALUES (:title, :description, :price, :host, :location);";
     $sql_get_pass = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
     $sql_get_pass->execute(array('title' => $title, 'description' => $desc, 'price' => $price, 'host' => $host, 'location' => $location));
+    $rows = $sql_get_pass->fetch(PDO::FETCH_ASSOC);
+
+    $activity_id = $pdo->lastInsertId();
+
+    // Add picture
+    $sql = "INSERT INTO picture (activity_id, img_data)
+            VALUES (:activity_id, :img_data);";
+    $sql_get_pass = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+    $sql_get_pass->execute(array('activity_id' => $activity_id, 'img_data' => $image));
     $rows = $sql_get_pass->fetch(PDO::FETCH_ASSOC);
 
     // return the id, and pin of the logged in user

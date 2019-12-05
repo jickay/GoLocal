@@ -44,6 +44,7 @@ export module Backend {
         public GET_BOOKED_ACTIVITIES = this._ROOT + "getBookedActivities.php";
         public GET_DASHBOARD_ACTIVITIES = this._ROOT + "dashboardActivities.php";
         
+        public GET_REVIEW = this._ROOT + "getReview.php";
         public REVIEW_ACTIVITY = this._ROOT + "reviewActivities.php";
         
         public EDIT_PROFILE = this._ROOT + "editProfile.php";
@@ -132,7 +133,7 @@ export module Backend {
                     let returnData = {
                         loggedIn: true
                     }
-                    if (json.usertype == 1) {
+                    if (newData.usertype == 1) {
                         navCtrl.setRoot(DashboardPage, returnData);
                     } else {
                         navCtrl.setRoot(HomePage, returnData);
@@ -161,8 +162,8 @@ export module Backend {
                     localStorage.set('user', {
                         username: json.username,
                         usertype: json.usertype,
-                        fname: newData.fname,
-                        lname: newData.fname,
+                        // fname: newData.fname,
+                        // lname: newData.lname,
                     });
 
                     if (json.usertype == 1) {
@@ -187,59 +188,87 @@ export module Backend {
         /**************************************************************/
         
         public getHomeActivities(http,storage,list) {
-            http.get(this.GET_HOME_ACTIVITY_URL,{},this.options)
-                .subscribe( data => {
-                    console.log("Home activities: ");
-                    console.log(data.json());
+            return http.get(this.GET_HOME_ACTIVITY_URL,{},this.options)
+                // .subscribe( data => {
+                //     console.log("Home activities: ");
+                //     console.log(data.json());
 
-                    storage.set('homeActivities',data.json());
-                    // var response = data.json();
-                    // this.getUserSecurityQuestions(http,options,navCtrl,response.user_ID);
-                    // localStorage.set('user_ID',response.user_ID);
-                }, error => {
-                    console.log("Could not get home activities");
-                })
+                //     storage.set('homeActivities',data.json());
+                    
+                //     // var response = data.json();
+                //     // this.getUserSecurityQuestions(http,options,navCtrl,response.user_ID);
+                //     // localStorage.set('user_ID',response.user_ID);
+                // }, error => {
+                //     console.log("Could not get home activities");
+                // })
         }
 
         public getDashboardActivities(http,storage,data,listAll,listBooked) {
-            http.post(this.GET_DASHBOARD_ACTIVITIES,data,this.options)
-                .subscribe( data => {
-                    let obj = data.json()
-                    console.log("Dashboard activities: ");
-                    console.log(obj);
+            return http.post(this.GET_DASHBOARD_ACTIVITIES,data,this.options)
+                // .subscribe( data => {
+                //     let obj = data.json()
+                //     console.log("Dashboard activities: ");
+                //     console.log(obj);
 
-                    storage.set('dashboardActivities',obj);
+                //     storage.set('dashboardActivities',obj);
 
-                }, error => {
-                    console.log("Could not get Dashboard activities");
-                })
+                // }, error => {
+                //     console.log("Could not get Dashboard activities");
+                // })
         }
 
         public getBookedActivities(http,storage,data) {
-            http.post(this.GET_BOOKED_ACTIVITIES,data,this.options)
-                .subscribe( data => {
-                    let obj = data.json()
-                    console.log("Booked activities: ");
-                    console.log(obj);
+            return http.post(this.GET_BOOKED_ACTIVITIES,data,this.options)
+                // .subscribe( data => {
+                //     let obj = data.json()
+                //     console.log("Booked activities: ");
+                //     console.log(obj);
 
-                    storage.set('bookedActivities',obj);
-                }, error => {
-                    console.log("Could not get Dashboard activities");
-                })
+                //     storage.set('bookedActivities',obj);
+                // }, error => {
+                //     console.log("Could not get Dashboard activities");
+                // })
         }
 
-        public createActivity(http,storage,newData) {
+        public createActivity(http,navCtrl,newData) {
             http.post(this.CREATE_ACTIVITY_URL,newData,this.options)
                 .subscribe( data => {
                     console.log("New activity ID: ");
                     console.log(data.json());
 
+                    navCtrl.pop();
                     // storage.set('homeActivities',data.json());
                     // var response = data.json();
                     // this.getUserSecurityQuestions(http,options,navCtrl,response.user_ID);
                     // localStorage.set('user_ID',response.user_ID);
                 }, error => {
                     console.log("Could not create activity");
+                })
+        }
+
+        public getActivityReview(http,storage,data) {
+            return http.post(this.GET_REVIEW,data,this.options)
+                // .subscribe( data => {
+                //     let obj = data.json()
+                //     console.log("Reviews: ");
+                //     console.log(obj);
+
+                //     storage.set('reviews',obj);
+                // }, error => {
+                //     console.log("Could not get Dashboard activities");
+                // })
+        }
+
+        public addReview(http,storage,data) {
+            http.post(this.REVIEW_ACTIVITY,data,this.options)
+                .subscribe( data => {
+                    let obj = data.json()
+                    console.log("Reviews: ");
+                    console.log(obj);
+
+                    alert("Review added!");
+                }, error => {
+                    console.log("Could not get Dashboard activities");
                 })
         }
 
@@ -270,7 +299,7 @@ export module Backend {
         /************************* Profile *************************/
         /**************************************************************/
 
-        public upsertProfile(http,storage,userData) {
+        public upsertProfile(http,storage,navCtrl,userData) {
             http.post(this.EDIT_PROFILE,userData,this.options)
                 .subscribe( data => {
                     let obj = data.json()
@@ -278,6 +307,11 @@ export module Backend {
                     console.log(obj);
 
                     storage.set('profile',obj);
+                    alert("Profile saved!");
+
+                    if (userData.usertype == 1) {
+                        navCtrl
+                    }
 
                 }, error => {
                     console.log("Could not update profile");
@@ -286,19 +320,19 @@ export module Backend {
         }
 
         public getProfile(http,storage,data) {
-            http.post(this.GET_PROFILE,data,this.options)
-                .subscribe( data => {
-                    let obj = data.json()
-                    console.log("User profile: ");
-                    console.log(obj);
+            return http.post(this.GET_PROFILE,data,this.options)
+                // .subscribe( data => {
+                //     let obj = data.json()
+                //     console.log("User profile: ");
+                //     console.log(obj);
 
-                    storage.set('profile',obj);
-                    // profile = obj;
+                //     storage.set('profile',obj);
+                //     // profile = obj;
 
-                }, error => {
-                    console.log("Could not get profile");
-                    console.log(error);
-                })
+                // }, error => {
+                //     console.log("Could not get profile");
+                //     console.log(error);
+                // })
         }
 
         public saveImage(http,image) {

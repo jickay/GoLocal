@@ -7,24 +7,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
     $json = file_get_contents('php://input');    //Retrive sent json object
     $obj = json_decode($json);                  //decode JSON object
 
-    $activityID = filter_var($obj->activityID, FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_LOW);    //Get the submitted passcod
-
-    $opt = array(
-        PDO::ATTR_ERRMODE  => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
-        PDO::ATTR_EMULATE_PREPARES => false,     //I know that emulation is important but not too sure how this relates 
-    );                                                                            
+    $activity_id = filter_var($obj->activity_id, FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_LOW);    //Get the submitted passcod                                                                      
 
     $sql = "SELECT *
             FROM review
             WHERE activity_id = :activity_id";
     $stmt = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-    $stmt->execute(array(':activityID' => $activityID);
+    $stmt->execute(array(':activity_id' => $activity_id));
 
     $send = array();
     while($rows = $stmt->fetch(PDO::FETCH_ASSOC)){
 
-      $username = $rows['usernmae'];
+      $username = $rows['username'];
       $rating = $rows['rating'];
       $comment = $rows['comment'];
 

@@ -38,61 +38,47 @@ export class DashboardPage {
     this.Ajax = new Backend.Ajax(http);
     
     this.username = this.navParams.get('name')
-    this.logInButton = this.username + "'s Profile";
-    
     this.storage.get('user').then( user => {
-      let guideID = user.username;
-      console.log(guideID);
-
-      this.Ajax.getDashboardActivities(http,storage,{username:guideID},this.activitiesAll,this.activitiesBooked);
-
-      // // Get all guide's activities from Firestore
-      // this.activitiesDBAll = this.fbProvider.getGuideActivities(guideID);
-      // // Convert Firestore object to normal object
-      // this.activitiesDBAll.subscribe(activities => {
-      //   this.activitiesData = [];
-      //   this.activitiesBooked = [];
-      //   activities.forEach(activity => {
-      //     console.log(activity.payload.doc.data());
-      //     const value = activity.payload.doc.data();
-      //     const id = activity.payload.doc.id;
-      //     let traveller = value['traveller'];
-      //     if (traveller) {
-      //       this.activitiesBooked.push({
-      //         id: id,
-      //         val: value
-      //       });
-      //     } else {
-      //       this.activitiesData.push({
-      //         id: id,
-      //         val: value
-      //       });
-      //     }
-          
-      //   });
-      // })
-      // console.log(this.activitiesData);
-      
+      this.logInButton = user.username + "'s Profile";
     })
+    
+    // this.storage.get('user').then( user => {
+    //   let guideID = user.username;
+    //   console.log(guideID);
+
+    //   // this.Ajax.getDashboardActivities(http,storage,{username:guideID},this.activitiesAll,this.activitiesBooked);
+      
+    // })
     
   }
 
   ionViewWillEnter() {
-    this.storage.get('dashboardActivities').then( activities => {
-      console.log(activities);
-      this.activitiesAll = [];
-      this.activitiesBooked = [];
-      for (let i=0; i<activities.length; i++) {
-        let a = activities[i];
-        console.log(a.avail);
+    // this.storage.get('dashboardActivities').then( activities => {
+    //   console.log(activities);
+    //   this.activitiesAll = [];
+    //   this.activitiesBooked = [];
+    //   for (let i=0; i<activities.length; i++) {
+    //     let a = activities[i];
+    //     console.log(a.avail);
         
-        a.avail ? this.activitiesAll.push(a) : this.activitiesBooked.push(a);
-        // this.activitiesAll = list;
+    //     a.avail ? this.activitiesAll.push(a) : this.activitiesBooked.push(a);
+    //     // this.activitiesAll = list;
         
-      }
-      console.log(this.activitiesAll);
-        console.log(this.activitiesBooked);
-    })
+    //   }
+    //   console.log(this.activitiesAll);
+    //     console.log(this.activitiesBooked);
+
+    // })
+
+    this.storage.get('user').then( user => {
+
+      this.Ajax.getDashboardActivities(this.http,this.storage,{username:user.username})
+        .subscribe(adata => {
+          let activities = adata.json();
+          this.activitiesAll = activities;
+        });
+    });
+
   }
 
   createAccountModal() {
